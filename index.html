@@ -7,28 +7,79 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
     <style>
+        .commands {
+            margin: 50px;
+        }
+
+        .testArea {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            grid-column-gap: 20px;
+        }
+
+        .space {
+            height: 500px;
+            background-color: lightskyblue;
+            display: flex;
+            justify-content: space-around;
+        }
+
         .box {
             width: 50px;
             height: 50px;
             background-color: chocolate;
         }
+
+        .color1 {
+            background-color: crimson;
+        }
+
+        .color2 {
+            background-color: lightgreen;
+        }
+
+        .color3 {
+            background-color: darkviolet;
+        }
     </style>
 </head>
 
 <body>
-    <div class="space">
-        <div class="box"></div>
+    <div class="commands">
+        <button type="button" onclick="physics.start()">on</button>
+        <button type="button" onclick="physics.freeze()">freeze</button>
+    </div>
+
+    <div class="testArea">
+        <div class="space">
+            <div class="box color1"></div>
+            <div class="box color2"></div>
+            <div class="box color3"></div>
+        </div>
+        <div class="space">
+            <div class="box color1"></div>
+            <div class="box color2"></div>
+            <div class="box color3"></div>
+        </div>
+        <div class="space">
+            <div class="box color1"></div>
+            <div class="box color2"></div>
+            <div class="box color3"></div>
+        </div>
     </div>
 
     <script src="physics.js"></script>
 
     <script>
-        var spaceElts = document.getElementsByClassName("space"),
-            boxElts = document.getElementsByClassName("box"),
-            space1 = new physics.PhysicArea(spaceElts[0]),
-            box1 = new physics.PhysicObject(boxElts[0], 5);
+        var spaceElts = document.getElementsByClassName("space");
+        var boxElts = document.getElementsByClassName("box");
 
-        // physics.turnOn();
+        console.log(boxElts);
+
+        function init() {
+            physics.init(spaceElts, boxElts, 1);
+            console.log(physics.objects);
+        }
     </script>
 </body>
 
