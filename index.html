@@ -46,25 +46,52 @@
 
 <body>
     <div class="commands">
+        <h2>Global</h2>
         <button type="button" onclick="physics.start()">on</button>
         <button type="button" onclick="physics.freeze()">freeze</button>
     </div>
 
     <div class="testArea">
-        <div class="area">
-            <div class="box color1"></div>
-            <div class="box color2"></div>
-            <div class="box color3"></div>
+        <div>
+            <div class="commands">
+                <h3>Area 1</h3>
+                <button type="button" onclick="physics.areas[0].start()">on</button>
+                <button type="button" onclick="physics.areas[0].freeze()">freeze</button>
+            </div>
+
+            <div class="area">
+                <div class="box color1"></div>
+                <div class="box color2"></div>
+                <div class="box color3"></div>
+            </div>
         </div>
-        <div class="area">
-            <div class="box color1"></div>
-            <div class="box color2"></div>
-            <div class="box color3"></div>
+
+        <div>
+            <div class="commands">
+                <h3>Area 2</h3>
+                <button type="button" onclick="physics.areas[1].start()">on</button>
+                <button type="button" onclick="physics.areas[1].freeze()">freeze</button>
+            </div>
+
+            <div class="area">
+                <div class="box color1"></div>
+                <div class="box color2"></div>
+                <div class="box color3"></div>
+            </div>
         </div>
-        <div class="area">
-            <div class="box color1"></div>
-            <div class="box color2"></div>
-            <div class="box color3"></div>
+
+        <div>
+            <div class="commands">
+                <h3>Area 3</h3>
+                <button type="button" onclick="physics.areas[2].start()">on</button>
+                <button type="button" onclick="physics.areas[2].freeze()">freeze</button>
+            </div>
+
+            <div class="area">
+                <div class="box color1"></div>
+                <div class="box color2"></div>
+                <div class="box color3"></div>
+            </div>
         </div>
     </div>
 
@@ -78,8 +105,8 @@
         function init() {
             physics.init(areaElts, {
                 addChildren: true,
-                childrenMasses: 0.1,
-                g: 1
+                childrenMasses: 1,
+                g: 9.81
             });
             console.log(physics.areas);
         }

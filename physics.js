@@ -202,11 +202,25 @@ var physics = {
                 x: x || targetElement.offsetLeft,
                 y: y || targetElement.offsetTop
             },
+            width: targetElement.offsetWidth,
+            height: targetElement.offsetHeight,
             vector: {
                 dx: 0,
                 dy: 0
             },
             element: targetElement,
+
+            /**
+             * Apply a vector to the object
+             *
+             * @param dx
+             * @param dy
+             */
+            applyVector(dx = 0, dy = 0) {
+                
+                object.vector.dx += dx;
+                object.vector.dy += dy;
+            },
 
             /**
              * Calculate the weight of the object
@@ -228,16 +242,73 @@ var physics = {
             },
 
             /**
+             * Reset the vector
+             */
+            resetVector: function () {
+
+                object.resetVectorX();
+                object.resetVectorY();
+            },
+
+            /**
+             * Reset the horizontal vector component
+             */
+            resetVectorX: function () {
+
+                object.vector.dx = 0;
+            },
+
+            /**
+             * Reset the vertical vector component
+             */
+            resetVectorY: function () {
+
+                object.vector.dy = 0;
+            },
+
+            /**
              * Move the object using its vector
              */
             move: function () {
 
                 if (object.isMoveable) {
-                    object.position.x += object.vector.dx;
-                    object.position.y += object.vector.dy + object.getWeight();
+                    object.position = getNextPosition();
+
                     object.refreshPosition();
 
                     requestAnimationFrame(object.move);
+                }
+
+                /**
+                 * Calculate the next position while taking into account the area limits
+                 *
+                 * @returns {{x: *, y: *}}
+                 */
+                function getNextPosition() {
+
+                    let nextPosition = {
+                        x: object.position.x + object.vector.dx,
+                        y: object.position.y + object.vector.dy + object.getWeight()
+                    };
+
+                    if (nextPosition.x < 0) {
+                        nextPosition.x = 0;
+                        object.resetVectorX();
+                    }
+                    if (nextPosition.y < 0) {
+                        nextPosition.y = 0;
+                        object.resetVectorY();
+                    }
+                    if (nextPosition.x + object.width > object.area.limits.x) {
+                        nextPosition.x = object.area.limits.x - object.width;
+                        object.resetVectorX();
+                    }
+                    if (nextPosition.y + object.height > object.area.limits.y) {
+                        nextPosition.y = object.area.limits.y - object.height;
+                        object.resetVectorY();
+                    }
+
+                    return nextPosition;
                 }
             }
         };
@@ -251,7 +322,6 @@ var physics = {
 
 /*
  * TODO
- * Identify an element to be the "space" where inside occurs physics on children
  */
 
 /*
