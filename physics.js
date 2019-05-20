@@ -3,19 +3,28 @@ var physics = {
     objects: [],
     g: 9.81,
 
-    newArea: function (targetElement) {
+    turnOn: function () {
+
+        for (let object of physics.objects) {
+            object.move();
+        }
+    },
+
+    PhysicArea: function (targetElement) {
 
         let area = {
             element: targetElement
         };
+        area.element.style.position = "relative";
 
         return area;
     },
 
-    newObject: function (targetElement = null, mass = 0) {
+    PhysicObject: function (targetElement = null, mass = 0) {
 
         let object = {
             mass: mass,
+            isMoveable: true,
             position: {
                 x: 0,
                 y: 0
@@ -39,21 +48,23 @@ var physics = {
 
             move: function () {
 
-                object.position.x += object.vector.dx;
-                object.position.y += object.vector.dy + object.getWeight();
-                object.refreshPosition();
+                if (object.isMoveable) {
+                    object.position.x += object.vector.dx;
+                    object.position.y += object.vector.dy + object.getWeight();
+                    object.refreshPosition();
 
-                requestAnimationFrame(object.move);
+                    requestAnimationFrame(object.move);
+                }
             }
-        }
+        };
 
-        object.element.style.position = "relative";
+        object.element.style.position = "absolute";
 
         physics.objects.push(object);
 
         return object;
     }
-}
+};
 
 /*
  * TODO

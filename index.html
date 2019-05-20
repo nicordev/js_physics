@@ -16,15 +16,19 @@
 </head>
 
 <body>
-    <div class="box"></div>
+    <div class="space">
+        <div class="box"></div>
+    </div>
 
     <script src="physics.js"></script>
 
     <script>
-        var boxElts = document.getElementsByClassName("box"),
-            box1 = physics.newObject(boxElts[0], 5);
+        var spaceElts = document.getElementsByClassName("space"),
+            boxElts = document.getElementsByClassName("box"),
+            space1 = new physics.PhysicArea(spaceElts[0]),
+            box1 = new physics.PhysicObject(boxElts[0], 5);
 
-        console.log(box1);
+        // physics.turnOn();
     </script>
 </body>
 
