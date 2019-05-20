@@ -1,0 +1,50 @@
+.commands {
+    margin: 50px;
+}
+
+.testArea {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-column-gap: 20px;
+}
+
+.area {
+    height: 500px;
+    background-color: lightskyblue;
+    display: flex;
+    justify-content: space-around;
+}
+
+.box {
+    width: 50px;
+    height: 50px;
+    background-color: chocolate;
+}
+
+.color1 {
+    background-color: crimson;
+}
+
+.color2 {
+    background-color: lightgreen;
+}
+
+.color3 {
+    background-color: darkviolet;
+}
+
+/* Info */
+
+.object-info {
+    background-color: beige;
+    margin: 10px;
+
+}
+
+.area-info {
+    background-color: aliceblue;
+    margin: 10px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, [col-start] minmax(100px, max-content) [col-end]);
+
+}

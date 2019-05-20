@@ -198,6 +198,7 @@ var physics = {
             area: area,
             mass: mass,
             isMoveable: true,
+            stayWithinAreaLimits: true,
             position: {
                 x: x || targetElement.offsetLeft,
                 y: y || targetElement.offsetTop
@@ -291,21 +292,23 @@ var physics = {
                         y: object.position.y + object.vector.dy + object.getWeight()
                     };
 
-                    if (nextPosition.x < 0) {
-                        nextPosition.x = 0;
-                        object.resetVectorX();
-                    }
-                    if (nextPosition.y < 0) {
-                        nextPosition.y = 0;
-                        object.resetVectorY();
-                    }
-                    if (nextPosition.x + object.width > object.area.limits.x) {
-                        nextPosition.x = object.area.limits.x - object.width;
-                        object.resetVectorX();
-                    }
-                    if (nextPosition.y + object.height > object.area.limits.y) {
-                        nextPosition.y = object.area.limits.y - object.height;
-                        object.resetVectorY();
+                    if (object.stayWithinAreaLimits) {
+                        if (nextPosition.x < 0) {
+                            nextPosition.x = 0;
+                            object.resetVectorX();
+                        }
+                        if (nextPosition.y < 0) {
+                            nextPosition.y = 0;
+                            object.resetVectorY();
+                        }
+                        if (nextPosition.x + object.width > object.area.limits.x) {
+                            nextPosition.x = object.area.limits.x - object.width;
+                            object.resetVectorX();
+                        }
+                        if (nextPosition.y + object.height > object.area.limits.y) {
+                            nextPosition.y = object.area.limits.y - object.height;
+                            object.resetVectorY();
+                        }
                     }
 
                     return nextPosition;

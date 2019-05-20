@@ -6,42 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
-    <style>
-        .commands {
-            margin: 50px;
-        }
-
-        .testArea {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            grid-column-gap: 20px;
-        }
-
-        .area {
-            height: 500px;
-            background-color: lightskyblue;
-            display: flex;
-            justify-content: space-around;
-        }
-
-        .box {
-            width: 50px;
-            height: 50px;
-            background-color: chocolate;
-        }
-
-        .color1 {
-            background-color: crimson;
-        }
-
-        .color2 {
-            background-color: lightgreen;
-        }
-
-        .color3 {
-            background-color: darkviolet;
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
@@ -49,7 +14,10 @@
         <h2>Global</h2>
         <button type="button" onclick="physics.start()">on</button>
         <button type="button" onclick="physics.freeze()">freeze</button>
+        <button type="button" onclick="physicsInfo.switchInfo()">info</button>
     </div>
+
+    <div id="info"></div>
 
     <div class="testArea">
         <div>
@@ -96,6 +64,7 @@
     </div>
 
     <script src="physics.js"></script>
+    <script src="physicsInfo.js"></script>
 
     <script>
         var areaElts = document.getElementsByClassName("area");
@@ -106,7 +75,7 @@
             physics.init(areaElts, {
                 addChildren: true,
                 childrenMasses: 1,
-                g: 9.81
+                g: 1
             });
             console.log(physics.areas);
         }
