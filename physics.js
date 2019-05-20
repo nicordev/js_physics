@@ -1,52 +1,24 @@
 var physics = {
 
     areas: [],
-    objects: [],
-    g: 9.81,
 
     /**
      * Add physic areas and objects to physics from arrays of DOM elements
      *
-     * @param spaceElements
-     * @param boxElements
-     * @param masses
+     * @param areaElements
+     * @param options
      */
-    init: function (spaceElements = null, boxElements = null, masses = 0) {
-
-        if (spaceElements) {
-            for (let spaceElement of spaceElements) {
-                physics.PhysicArea(spaceElement);
-            }
+    init: function (
+        areaElements = [],
+        options = {
+            addChildren: true,
+            childrenMasses: 1,
+            g: 9.81
         }
+    ) {
 
-        if (boxElements) {
-            let xValues = [],
-                yValues = [];
-
-            for (let boxElement of boxElements) {
-                xValues.push(boxElement.offsetLeft);
-                yValues.push(boxElement.offsetTop);
-            }
-
-            if (Array.isArray(masses)) {
-                let i = 0,
-                    j = 0,
-                    size = masses.length;
-                for (let boxElement of boxElements) {
-                    physics.PhysicObject(boxElement, masses[i], xValues[j], yValues[j]);
-                    i++;
-                    j++;
-                    if (i >= size) {
-                        i = size - 1;
-                    }
-                }
-
-            } else {
-                let i = 0;
-                for (let boxElement of boxElements) {
-                    physics.PhysicObject(boxElement, masses, xValues[i], yValues[i]);
-                }
-            }
+        for (let areaElement of areaElements) {
+            physics.PhysicArea(areaElement, options);
         }
     },
 
@@ -55,9 +27,8 @@ var physics = {
      */
     start: function () {
 
-        for (let object of physics.objects) {
-            object.isMoveable = true;
-            object.move();
+        for (let area of physics.areas) {
+            area.start();
         }
     },
 
@@ -66,8 +37,20 @@ var physics = {
      */
     freeze: function () {
 
-        for (let object of physics.objects) {
-            object.isMoveable = false;
+        for (let area of physics.areas) {
+            area.freeze();
+        }
+    },
+
+    /**
+     * Set the g value for every areas
+     *
+     * @param g
+     */
+    setG: function (g = 9.81) {
+
+        for (let area of physics.areas) {
+            area.g = g;
         }
     },
 
@@ -75,38 +58,144 @@ var physics = {
      * PhysicArea constructor
      *
      * @param targetElement
+     * @param options
      * @returns {{limits: {x: number, y: number}, element: *}}
      * @constructor
      */
-    PhysicArea: function (targetElement) {
+    PhysicArea: function (
+        targetElement,
+        options = {
+            addChildren: false,
+            childrenMasses: 0,
+            g: 9.81
+        }
+    ) {
 
         let area = {
+            g: options.g || 9.81,
             element: targetElement,
             limits: {
                 x: targetElement.offsetWidth,
                 y: targetElement.offsetHeight
+            },
+            objects: [],
+
+            /**
+             * Add a physic object to the area
+             *
+             * @param object
+             */
+            addObject: function (object) {
+
+                area.objects.push(object);
+            },
+
+            /**
+             * Apply the wonderful laws of physics in the area!
+             */
+            start: function () {
+
+                for (let object of area.objects) {
+                    object.isMoveable = true;
+                    object.move();
+                }
+            },
+
+            /**
+             * Freeze all physic objects in the area
+             */
+            freeze: function () {
+
+                for (let object of area.objects) {
+                    object.isMoveable = false;
+                }
             }
         };
         area.element.style.position = "relative";
 
+        // Add children elements
+        if (options.addChildren) {
+            let childrenElements = area.element.children,
+                positions = getXYValues(childrenElements);
+
+            if (Array.isArray(options.childrenMasses)) {
+                for (let i = 0,
+                         j = 0,
+                         size = childrenElements.length,
+                         massesCount = options.childrenMasses.length;
+                     i < size;
+                     i++, j++) {
+                    area.addObject(
+                        physics.PhysicObject(
+                            childrenElements[i],
+                            area,
+                            options.childrenMasses[j],
+                            positions.xValues[i],
+                            positions.yValues[i]
+                        )
+                    );
+                    if (j >= massesCount) {
+                        j = massesCount - 1;
+                    }
+                }
+
+            } else {
+                for (let i = 0, size = childrenElements.length; i < size; i++) {
+                    area.addObject(
+                        physics.PhysicObject(
+                            childrenElements[i],
+                            area,
+                            options.childrenMasses || 0,
+                            positions.xValues[i],
+                            positions.yValues[i]
+                        )
+                    );
+                }
+            }
+        }
+
         physics.areas.push(area);
 
         return area;
+
+        /**
+         * Get the offsetLeft and offsetTop value of the element. Do this before applying "absolute" position to elements
+         *
+         * @param objectElements
+         * @returns {{yValues: Array, xValues: Array}}
+         */
+        function getXYValues(objectElements) {
+
+            let xValues = [],
+                yValues = [];
+
+            for (let objectElement of objectElements) {
+                xValues.push(objectElement.offsetLeft);
+                yValues.push(objectElement.offsetTop);
+            }
+
+            return {
+                xValues: xValues,
+                yValues: yValues
+            }
+        }
     },
 
     /**
      * PhysicObject constructor
      *
      * @param targetElement
+     * @param area
      * @param mass
      * @param x
      * @param y
      * @returns {{isMoveable: boolean, move: move, getWeight: (function(): number), mass: number, vector: {dx: number, dy: number}, position: {x: number, y: number}, refreshPosition: refreshPosition, element: *}}
      * @constructor
      */
-    PhysicObject: function (targetElement, mass = 0, x = null, y = null) {
+    PhysicObject: function (targetElement, area, mass = 0, x = null, y = null) {
 
         let object = {
+            area: area,
             mass: mass,
             isMoveable: true,
             position: {
@@ -126,7 +215,7 @@ var physics = {
              */
             getWeight: function () {
 
-                return object.mass * physics.g;
+                return object.mass * object.area.g;
             },
 
             /**
@@ -155,8 +244,6 @@ var physics = {
 
         object.element.style.position = "absolute";
         object.refreshPosition();
-
-        physics.objects.push(object);
 
         return object;
     }

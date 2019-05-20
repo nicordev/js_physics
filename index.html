@@ -17,7 +17,7 @@
             grid-column-gap: 20px;
         }
 
-        .space {
+        .area {
             height: 500px;
             background-color: lightskyblue;
             display: flex;
@@ -51,17 +51,17 @@
     </div>
 
     <div class="testArea">
-        <div class="space">
+        <div class="area">
             <div class="box color1"></div>
             <div class="box color2"></div>
             <div class="box color3"></div>
         </div>
-        <div class="space">
+        <div class="area">
             <div class="box color1"></div>
             <div class="box color2"></div>
             <div class="box color3"></div>
         </div>
-        <div class="space">
+        <div class="area">
             <div class="box color1"></div>
             <div class="box color2"></div>
             <div class="box color3"></div>
@@ -71,14 +71,17 @@
     <script src="physics.js"></script>
 
     <script>
-        var spaceElts = document.getElementsByClassName("space");
-        var boxElts = document.getElementsByClassName("box");
+        var areaElts = document.getElementsByClassName("area");
 
-        console.log(boxElts);
+        init();
 
         function init() {
-            physics.init(spaceElts, boxElts, 1);
-            console.log(physics.objects);
+            physics.init(areaElts, {
+                addChildren: true,
+                childrenMasses: 0.1,
+                g: 1
+            });
+            console.log(physics.areas);
         }
     </script>
 </body>
